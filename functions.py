@@ -1,13 +1,13 @@
-from itertools import count
 import pandas as pd
-import json
 import re
 
 
 def retweeted(dataset):  # 1. Los top 10 tweets más retweeted.
     print('Los 10 tweets más retweeted son:')
-    dataset.set_index(['retweetCount'])
-    print(dataset.nlargest(n=10, columns=['retweetCount'])[['retweetCount', 'content']])
+    top_retweeted = dataset.nlargest(n=10, columns=['retweetCount'])[['retweetCount', 'content']]
+    top_retweeted = top_retweeted.set_index(['retweetCount'])
+    top_retweeted['content'] = top_retweeted['content'].str.slice(0,50)
+    print(top_retweeted)
 
 
 # 2. Los top 10 usuarios en función a la cantidad de tweets que emitieron.
@@ -43,48 +43,11 @@ def usados(dataset):  # 4. Top 10 hashtags más usados
     print(top_hashtag.nlargest(n=10, columns=['Frecuencia'])[['Hashtag', 'Frecuencia']].to_string(index=False))
 
 
-# "url": "https://twitter.com/ShashiRajbhar6/status/1376739399593910273", 
-# "date": "2021-03-30T03:33:46+00:00", 
-# "content": "Support \ud83d\udc47\n\n#FarmersProtest", 
-# "renderedContent": "Support \ud83d\udc47\n\n#FarmersProtest", 
-# "id": 1376739399593910273, 
-# "user": {"username": "ShashiRajbhar6", "displayname": "Shashi Rajbhar", "id": 1015969769760096256, "description": "Satya presan \ud83e\udd14ho Sakta but prajit\ud83d\udcaa nhi\njhuth se samjhauta kbhi nhi\nJai Shree Ram \ud83d\udd49 \ud83d\ude4f\ud83d\udd49 followed by hon'ble @ArunrajbharSbsp", "rawDescription": "Satya presan \ud83e\udd14ho Sakta but prajit\ud83d\udcaa nhi\njhuth se samjhauta kbhi nhi\nJai Shree Ram \ud83d\udd49 \ud83d\ude4f\ud83d\udd49 followed by hon'ble @ArunrajbharSbsp", "descriptionUrls": [], "verified": false, "created": "2018-07-08T14:44:03+00:00", "followersCount": 1788, "friendsCount": 1576, "statusesCount": 14396, "favouritesCount": 26071, "listedCount": 1, "mediaCount": 254, "location": "Azm Uttar Pradesh, India", "protected": false, "linkUrl": null, "linkTcourl": null, "profileImageUrl": "https://pbs.twimg.com/profile_images/1354331299868237825/eDzdhZTD_normal.jpg", "profileBannerUrl": "https://pbs.twimg.com/profile_banners/1015969769760096256/1613727783", "url": "https://twitter.com/ShashiRajbhar6"}, 
-# "outlinks": [], 
-# "tcooutlinks": [], 
-# "replyCount": 0, 
-# "retweetCount": 0, 
-# "likeCount": 0, 
-# "quoteCount": 0, 
-# "conversationId": 1376739399593910273, 
-# "lang": "en", 
-# "source": "<a href=\"http://twitter.com/download/android\" rel=\"nofollow\">Twitter for Android</a>", 
-# "sourceUrl": "http://twitter.com/download/android", 
-# "sourceLabel": "Twitter for Android", 
-# "media": null, 
-# "retweetedTweet": null, 
-# "quotedTweet": null, 
-# "mentionedUsers": null}
-
-
-
 if __name__ == "__main__":
-    # with open('farmers-protest-tweets-2021-03-5.json', 'r') as file:
-    #     data = file.readlines()
-
-    # with open('data/farmers-protest-tweets-2021-03-5.json') as json_file:
-    #     data = json.load(json_file)
-    # print(data)
-
-
-    # Reading from file
-    # f = open('data/farmers-protest-tweets-2021-03-5.json', "r")
-    # data = json.loads(f.read())
-
     # data = pd.read_json('data/farmers-protest-tweets-2021-03-5.json', lines=True)
     data = pd.read_json('data/test.json')
-    # print(data['user'].iloc[3])
 
-    retweeted(data)
+    # retweeted(data)
     # usuarios(data)
-    # dias(data)
+    dias(data)
     # usados(data)
