@@ -1,15 +1,27 @@
+from itertools import count
 import pandas as pd
 import json
+import re
 
 
 def retweeted(dataset):  # 1. Los top 10 tweets más retweeted.
     print('Los 10 tweets más retweeted son:')
+    dataset.set_index(['retweetCount'])
     print(dataset.nlargest(n=10, columns=['retweetCount'])[['retweetCount', 'content']])
 
 
 # 2. Los top 10 usuarios en función a la cantidad de tweets que emitieron.
 def usuarios(dataset):
     print("Los 10 usuarios que mas tweets emitieron son:")
+    list_users = []
+    for i in range(len(dataset)):
+        data_user = dataset.iloc[i]['user']
+        list_users.append(data_user['username'])
+    data_usernames = pd.DataFrame(list_users, columns=['Username'])
+    count_usernames = data_usernames['Username'].value_counts()
+    top_username = pd.DataFrame({'Username': count_usernames.index, 'Frecuencia': count_usernames.values})
+    print(top_username.nlargest(n=10, columns=['Frecuencia'])[['Username', 'Frecuencia']].to_string(index=False))
+        
 
 
 def dias(dataset):  # 3. Los top 10 días donde hay más tweets.
@@ -17,14 +29,18 @@ def dias(dataset):  # 3. Los top 10 días donde hay más tweets.
     dataset['fecha'] = [d.date() for d in dataset['date']]
     fechas_count = dataset['fecha'].value_counts()
     top_fechas = pd.DataFrame({'Fecha':fechas_count.index, 'Frecuencia':fechas_count.values})
-    # top_fechas.columns = []
     print(top_fechas.nlargest(n=10, columns=['Frecuencia'])[['Fecha', 'Frecuencia']].to_string(index=False))
-    # print(top_fechas.nlargest(n=10, columns = ['']))
-    # print(dataset['fecha'])
 
 
 def usados(dataset):  # 4. Top 10 hashtags más usados
     print("Los 10 hashtags más usados son:")
+    list_hashtags = []
+    for i in range(len(dataset)):
+        list_hashtags += re.findall(r"#(\w+)", dataset.iloc[i]['content'])
+    data_hashtags = pd.DataFrame(list_hashtags, columns=['Hashtag'])
+    count_hashtag = data_hashtags['Hashtag'].value_counts()
+    top_hashtag = pd.DataFrame({'Hashtag': count_hashtag.index, 'Frecuencia': count_hashtag.values})
+    print(top_hashtag.nlargest(n=10, columns=['Frecuencia'])[['Hashtag', 'Frecuencia']].to_string(index=False))
 
 
 # "url": "https://twitter.com/ShashiRajbhar6/status/1376739399593910273", 
@@ -69,6 +85,6 @@ if __name__ == "__main__":
     # print(data['user'].iloc[3])
 
     retweeted(data)
-    # usuarios(datsa)
+    # usuarios(data)
     # dias(data)
     # usados(data)
